@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.StudentRequestDto;
+import com.example.demo.dto.StudentResponseDto;
 import com.example.demo.entity.Student;
 import com.example.demo.service.StudentService;
 import java.util.List;
@@ -25,45 +27,48 @@ public class StudentController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<Student> create(@RequestBody Student student) {
-    Student createdStudent = studentService.create(student);
+  public ResponseEntity<StudentResponseDto> create(@RequestBody StudentRequestDto studentReq) {
+    StudentResponseDto createdStudent = studentService.create(studentReq);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
   }
 
   @GetMapping("/get")
   public ResponseEntity<Student> getById(@RequestParam Long id) {
-    Student studentResponse =studentService.getdById(id);
+    Student studentResponse = studentService.getdById(id);
 
-    if (studentResponse ==null){
+    if (studentResponse == null) {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(studentResponse);
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<List<Student>> getAll(){
+  public ResponseEntity<List<Student>> getAll() {
     List<Student> studentResponse = studentService.getAll();
 
-    if (studentResponse.isEmpty()){
+    if (studentResponse.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(studentResponse);
   }
+
   @PutMapping("/update")
-  public ResponseEntity<Student> update(@RequestParam Long id,@RequestBody Student studentReq){
-      Student studentResponse = studentService.update(id,studentReq);
+  public ResponseEntity<StudentResponseDto> update(@RequestParam Long id,
+      @RequestBody StudentRequestDto studentReq) {
+    StudentResponseDto studentResponse = studentService.update(id, studentReq);
 
-      if (studentResponse == null){
-        return ResponseEntity.notFound().build();
-      }
+    if (studentResponse == null) {
+      return ResponseEntity.notFound().build();
+    }
 
-      return ResponseEntity.ok(studentResponse);
+    return ResponseEntity.ok(studentResponse);
   }
+
   @DeleteMapping("/delete")
-  public ResponseEntity<String> delete (@RequestParam Long id ){
+  public ResponseEntity<String> delete(@RequestParam Long id) {
     Boolean isDeleted = studentService.delete(id);
 
-    if (!isDeleted){
+    if (!isDeleted) {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok("Record deleted");

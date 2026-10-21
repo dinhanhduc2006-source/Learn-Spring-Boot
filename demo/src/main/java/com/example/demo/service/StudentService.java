@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.StudentRequestDto;
+import com.example.demo.dto.StudentResponseDto;
 import com.example.demo.entity.Student;
 import com.example.demo.repository.StudentRepository;
 import java.util.List;
@@ -15,9 +17,10 @@ public class StudentService {
     this.studentRepository = studentRepository;
   }
 
-  public Student create(Student studentReq) {
-    Student studentResp = studentRepository.save(studentReq);
-    return studentResp;
+  public StudentResponseDto create(StudentRequestDto studentReq) {
+    Student student = studentRepository.save(this.mapToEntity(studentReq));
+    StudentResponseDto studentResponse = this.mapToResponseDTO(student,"da tao xong");
+    return studentResponse;
   }
 
   public List<Student> getAll() {
@@ -35,7 +38,7 @@ public class StudentService {
     return null;
   }
 
-  public Student update(Long id, Student studentReq) {
+  public StudentResponseDto update(Long id, StudentRequestDto studentReq) {
     Optional<Student> existingStudent = studentRepository.findById(id);
 
     if (existingStudent.isEmpty()) {
@@ -45,11 +48,14 @@ public class StudentService {
     Student studentToSave = existingStudent.get();
     studentToSave.setName(studentReq.getName());
     studentToSave.setAge(studentReq.getAge());
-    studentToSave.setEmail(studentToSave.getEmail());
+    studentToSave.setEmail(studentReq.getEmail());
     studentToSave.setSubject(studentReq.getSubject());
-    studentToSave.setRollNumber(studentReq.getRollNumber());
 
-    return studentRepository.save(studentToSave);
+    Student student=studentRepository.save(studentToSave);
+
+    StudentResponseDto savedStudent = this.mapToResponseDTO(student,"successfull");
+
+    return savedStudent;
 
   }
 
@@ -65,6 +71,28 @@ public class StudentService {
     studentRepository.deleteById(id);
 
     return true;
+  }
+
+  private Student mapToEntity(StudentRequestDto studentReq) {
+    Student student = new Student();
+
+    student.setName(studentReq.getName());
+    student.setSubject(studentReq.getSubject());
+    student.setAge(studentReq.getAge());
+    student.setEmail(studentReq.getEmail());
+
+    return student;
+  }
+
+  private StudentResponseDto mapToResponseDTO(Student student, String message) {
+    StudentResponseDto studentResponseDto = new StudentResponseDto();
+    studentResponseDto.setAge(student.getAge());
+    studentResponseDto.setEmail(student.getEmail());
+    studentResponseDto.setName(student.getName());
+    studentResponseDto.setSubject(student.getSubject());
+    studentResponseDto.setId(student.getId());
+    studentResponseDto.setMessage(message);
+    return studentResponseDto;
   }
 
 }
