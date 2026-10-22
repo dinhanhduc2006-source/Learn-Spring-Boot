@@ -1,15 +1,21 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CreateStudentRequestDto;
+import com.example.demo.dto.CreateStudentResponseDto;
 import com.example.demo.dto.StudentRequestDto;
 import com.example.demo.dto.StudentResponseDto;
+import com.example.demo.dto.UpdateStudentRequestDto;
+import com.example.demo.dto.UpdateStudentResponseDto;
 import com.example.demo.entity.Student;
 import com.example.demo.service.StudentService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,62 +33,51 @@ public class StudentController {
     this.studentService = studentService;
   }
 
-  @PostMapping("/create")
-  public ResponseEntity<Student> create(@RequestBody Student studentReq) {
-    Student createdStudent = studentService.create(studentReq);
+  @PostMapping
+  public ResponseEntity<CreateStudentResponseDto> create(
+      @Valid @RequestBody CreateStudentRequestDto studentReq) {
+    CreateStudentResponseDto createdStudent = studentService.create(studentReq);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
   }
 
-  @GetMapping("/get")
-  public ResponseEntity<Student> getById(@RequestParam Long id) {
-    Student studentResponse = studentService.getdById(id);
+  @GetMapping("/{id}")
+  public ResponseEntity<CreateStudentResponseDto> getById(@PathVariable Long id) {
 
-    if (studentResponse == null) {
-      return ResponseEntity.notFound().build();
-    }
-    return ResponseEntity.ok(studentResponse);
-  }
-
-  @GetMapping("/getAll")
-  public ResponseEntity<List<Student>> getAll() {
-    List<Student> studentResponse = studentService.getAll();
-
-    if (studentResponse.isEmpty()) {
-      return ResponseEntity.notFound().build();
-    }
-    return ResponseEntity.ok(studentResponse);
-  }
-
-  @PutMapping("/update")
-  public ResponseEntity<Student> update(@RequestParam Long id,
-      @RequestBody Student studentReq) {
-    Student studentResponse = studentService.update(id, studentReq);
-
-    if (studentResponse == null) {
-      return ResponseEntity.notFound().build();
-    }
+    CreateStudentResponseDto studentResponse = studentService.getdById(id);
 
     return ResponseEntity.ok(studentResponse);
   }
 
-  @DeleteMapping("/delete")
+  @GetMapping
+  public ResponseEntity<List<CreateStudentResponseDto>> getAll() {
+    List<CreateStudentResponseDto> studentResponse = studentService.getAll();
+
+    return ResponseEntity.ok(studentResponse);
+  }
+
+  @PutMapping
+  public ResponseEntity<UpdateStudentResponseDto> update(@RequestParam Long id,
+      @RequestBody UpdateStudentRequestDto studentReq) {
+
+    UpdateStudentResponseDto studentResponse = studentService.update(id, studentReq);
+
+
+    return ResponseEntity.ok(studentResponse);
+  }
+
+  @DeleteMapping
   public ResponseEntity<String> delete(@RequestParam Long id) {
-    Boolean isDeleted = studentService.delete(id);
+    studentService.delete(id);
+    return ResponseEntity.noContent().build();
 
-    if (!isDeleted) {
-      return ResponseEntity.notFound().build();
-    }
-    return ResponseEntity.ok("Record deleted");
   }
 
   @PatchMapping("/delete-soft")
-  public ResponseEntity<String> deleteStudentSoftly(@RequestParam Long id){
-    Boolean isDeleted = studentService.deleteStudentSoftly(id);
-    if (!isDeleted){
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<String> deleteStudentSoftly(@RequestParam Long id) {
+    studentService.deleteStudentSoftly(id);
 
-    return ResponseEntity.ok("Record deleted");
+    return ResponseEntity.noContent().build();
+
   }
 
 }

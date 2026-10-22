@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 public class Student {
@@ -19,11 +19,16 @@ public class Student {
 
   private Integer age;
 
-  private String rollNumber;
+  private Integer rollNo;
 
   private String subject;
 
   private Boolean isDeleted;
+
+  private LocalDateTime createdAt;
+
+  private LocalDateTime updatedAt;
+
 
   public Long getId() {
     return id;
@@ -57,12 +62,12 @@ public class Student {
     this.age = age;
   }
 
-  public String getRollNumber() {
-    return rollNumber;
+  public Integer getRollNo() {
+    return rollNo;
   }
 
-  public void setRollNumber(String rollNumber) {
-    this.rollNumber = rollNumber;
+  public void setRollNo(Integer rollNo) {
+    this.rollNo = rollNo;
   }
 
   public String getSubject() {
@@ -79,5 +84,21 @@ public class Student {
 
   public void setDeleted(Boolean deleted) {
     isDeleted = deleted;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
   }
 }

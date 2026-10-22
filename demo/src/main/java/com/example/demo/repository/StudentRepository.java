@@ -12,4 +12,5 @@ public interface StudentRepository  extends JpaRepository<Student,Long> {
   //Tìm kiếm duy nhất một học sinh theo mã định danh id với điều kiện học sinh đó chưa bị xóa mềm.
   List<Student> findAllByIsDeletedFalse();
   //Lấy toàn bộ danh sách học sinh trong hệ thống đang hoạt động (chưa bị xóa mềm)
+  Boolean existsByEmail(String email);
 }
