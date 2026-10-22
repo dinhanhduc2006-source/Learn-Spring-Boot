@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +28,8 @@ public class StudentController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<StudentResponseDto> create(@RequestBody StudentRequestDto studentReq) {
-    StudentResponseDto createdStudent = studentService.create(studentReq);
+  public ResponseEntity<Student> create(@RequestBody Student studentReq) {
+    Student createdStudent = studentService.create(studentReq);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
   }
 
@@ -53,9 +54,9 @@ public class StudentController {
   }
 
   @PutMapping("/update")
-  public ResponseEntity<StudentResponseDto> update(@RequestParam Long id,
-      @RequestBody StudentRequestDto studentReq) {
-    StudentResponseDto studentResponse = studentService.update(id, studentReq);
+  public ResponseEntity<Student> update(@RequestParam Long id,
+      @RequestBody Student studentReq) {
+    Student studentResponse = studentService.update(id, studentReq);
 
     if (studentResponse == null) {
       return ResponseEntity.notFound().build();
@@ -71,6 +72,16 @@ public class StudentController {
     if (!isDeleted) {
       return ResponseEntity.notFound().build();
     }
+    return ResponseEntity.ok("Record deleted");
+  }
+
+  @PatchMapping("/delete-soft")
+  public ResponseEntity<String> deleteStudentSoftly(@RequestParam Long id){
+    Boolean isDeleted = studentService.deleteStudentSoftly(id);
+    if (!isDeleted){
+      return ResponseEntity.notFound().build();
+    }
+
     return ResponseEntity.ok("Record deleted");
   }
 

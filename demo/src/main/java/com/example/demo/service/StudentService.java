@@ -17,14 +17,15 @@ public class StudentService {
     this.studentRepository = studentRepository;
   }
 
-  public StudentResponseDto create(StudentRequestDto studentReq) {
-    Student student = studentRepository.save(this.mapToEntity(studentReq));
-    StudentResponseDto studentResponse = this.mapToResponseDTO(student,"da tao xong");
+  public Student create(Student studentReq) {
+    studentReq.setDeleted(false);
+    Student studentResponse= studentRepository.save(studentReq);
+
     return studentResponse;
   }
 
   public List<Student> getAll() {
-    List<Student> studentList = studentRepository.findAll();
+    List<Student> studentList = studentRepository.findAllByIsDeletedFalse();
     return studentList;
   }
 
@@ -38,24 +39,23 @@ public class StudentService {
     return null;
   }
 
-  public StudentResponseDto update(Long id, StudentRequestDto studentReq) {
-    Optional<Student> existingStudent = studentRepository.findById(id);
+  public Student update(Long id, Student studentReq) {
+    Optional<Student> existingStudent = studentRepository.findByIdAndIsDeletedIsFalse(id);
 
     if (existingStudent.isEmpty()) {
       return null;
     }
 
     Student studentToSave = existingStudent.get();
+
     studentToSave.setName(studentReq.getName());
     studentToSave.setAge(studentReq.getAge());
     studentToSave.setEmail(studentReq.getEmail());
     studentToSave.setSubject(studentReq.getSubject());
+    studentToSave.setDeleted(false);
 
-    Student student=studentRepository.save(studentToSave);
 
-    StudentResponseDto savedStudent = this.mapToResponseDTO(student,"successfull");
-
-    return savedStudent;
+    return studentRepository.save(studentToSave);
 
   }
 
@@ -69,6 +69,20 @@ public class StudentService {
     }
 
     studentRepository.deleteById(id);
+
+    return true;
+  }
+
+  public Boolean deleteStudentSoftly(Long id){
+    Optional<Student> existingStudent = studentRepository.findByIdAndIsDeletedIsFalse(id);
+
+    if (existingStudent.isEmpty()){
+      return  false;
+    }
+
+    Student studentToSave = existingStudent.get();
+    studentToSave.setDeleted(true);
+    studentRepository.save(studentToSave);
 
     return true;
   }
