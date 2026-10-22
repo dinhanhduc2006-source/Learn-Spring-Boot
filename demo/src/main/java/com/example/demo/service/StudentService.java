@@ -74,7 +74,7 @@ public class StudentService {
     Student studentToBeDeleted = studentRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Student with id " + id + " not found"));
 
-    studentRepository.deleteById(id);
+    studentRepository.delete(studentToBeDeleted);
   }
 
   public void deleteStudentSoftly(Long id) {
